@@ -1,24 +1,21 @@
 #![doc = include_str!("../README.md")]
 #![cfg_attr(not(feature = "std"), no_std)]
 
+extern crate alloc;
 #[cfg(test)]
 extern crate std;
 
-extern crate alloc;
-
-use core::sync::atomic::{Ordering::*, AtomicPtr, AtomicUsize};
-use core::{slice::from_raw_parts, str::from_utf8, ops::Deref};
 use alloc::boxed::Box;
+use core::sync::atomic::{AtomicPtr, AtomicUsize, Ordering::*};
+use core::{ops::Deref, slice::from_raw_parts, str::from_utf8};
 
 mod hash;
-mod small;
 mod large;
+mod small;
 mod traits;
 
-#[cfg(feature = "std")]
 mod static_pool;
 
-#[cfg(feature = "std")]
 pub use static_pool::PoolCell;
 
 #[cfg(feature = "serde")]
@@ -220,9 +217,7 @@ impl<const P: usize> Clone for PoolStr<P> {
 impl<const P: usize> Clone for Pool<P> {
     fn clone(&self) -> Self {
         self.inner().inc_ref_count();
-        Self {
-            inner: self.inner,
-        }
+        Self { inner: self.inner }
     }
 }
 

@@ -1,5 +1,5 @@
-use std::sync::Mutex;
 use super::Pool;
+use spin::Mutex;
 
 #[derive(Debug)]
 pub struct PoolCell<const P: usize> {
@@ -17,13 +17,13 @@ impl<const P: usize> PoolCell<P> {
 
     /// Swaps the inner pool with a new one
     pub fn swap(&self, pool: Pool<P>) {
-        let mut guard = self.pool.lock().expect("Couldn't lock Mutex");
+        let mut guard = self.pool.lock();
         *guard = Some(pool);
     }
 
     /// Retrieves the inner pool
     pub fn pool(&self) -> Pool<P> {
-        let mut guard = self.pool.lock().expect("Couldn't lock Mutex");
+        let mut guard = self.pool.lock();
 
         if guard.is_none() {
             *guard = Some(Pool::new());
