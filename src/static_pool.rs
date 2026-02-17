@@ -4,6 +4,7 @@ use bevy_platform::sync::{Mutex, PoisonError};
 #[derive(Debug)]
 pub struct PoolCell<const P: usize> {
     pool: Mutex<Option<Pool<P>>>,
+    #[cfg_attr(not(feature = "serde"), allow(dead_code))]
     pub(crate) subpools: usize,
 }
 
